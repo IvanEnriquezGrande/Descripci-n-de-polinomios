@@ -1,7 +1,22 @@
 import cmath
+import random
 
-#
-def numeroRandom():
+#Generar numeros aleatorios
+def numeroRandom(coeficientes):
+    nRandom = 0
+    a = abs(coeficientes[0])
+    #Tengo la hipotesis de que el termino independinte puede ser un indice para generar los numeros aleatorios
+    #por default me gustaria crear un numero cercano a 0
+    #caso base (termino idependiente es 0)
+    if(a == 0):
+        nRandom = random.randint(-20,20)
+        return nRandom
+    
+    nRandom = random.randint(-a, a)
+    return nRandom
+
+#generar numeros complejos aleatorios
+def numeroRandomComplex(coeficientes):
     return 0
 
 #metodo de derivadas
@@ -29,8 +44,6 @@ def newtonRapshonComplex(grado, coeficientes, derivada, c):
     print ("introduce el valor inicial de prueba")
     xi = complex(input())
     i = 0
-    #print(horner(grado, coeficientes, xi))
-    #print(horner(grado-1, derivada, xi))
     
     if((horner(grado-1, derivada, xi)) == 0):
             print("Horner es 0, ingresa otro el valor: ")
@@ -62,11 +75,8 @@ def newtonRapshon(grado, coeficientes, derivada, c):
     tolerancia = 0.5*pow(10,2-c)
     
     #Valores de prueba (Modificar a random)
-    print ("introduce el valor inicial de prueba")
-    xi = float(input())
+    xi = numeroRandom(coeficientes)
     i = 0
-    #print(horner(grado, coeficientes, xi))
-    #print(horner(grado-1, derivada, xi))
     print(grado - 1)
     if((horner(grado - 1, derivada, xi)) == 0):
             print("Horner es 0, ingresa otro el valor: ")
@@ -93,6 +103,7 @@ def newtonRapshon(grado, coeficientes, derivada, c):
 def raices(grado, coeficientes, derivada, c = 6):
     j = 1
     nRaices = grado
+    raiz = 0
     raices = []
     
     if(coeficientes[0] == 0):
@@ -100,7 +111,13 @@ def raices(grado, coeficientes, derivada, c = 6):
         nRaices = nRaices - 1;
         
     while(j <= nRaices ):
-        raices.append(newtonRapshon(grado, coeficientes, derivada, c))
+        raiz = newtonRapshon(grado, coeficientes, derivada, c)
+        #prevencion de ciclado por no encontrar otra raiz
+        exit = 0
+        while(raiz in raices and (exit < 10)):
+            raiz = newtonRapshon(grado, coeficientes, derivada, c)
+            exit += 1
+        raices.append(raiz)    
         j = j + 1
     return raices
 
@@ -177,4 +194,4 @@ def inflexion(grado, derivada, coeficientes):
             y = horner(grado, coeficientes, candidatosInflex[int(i)])
             print(f"Puntos de inflexion: {candidatosInflex[int(i)]}, {y}")
         #aumento del ciclo
-        i += 1       
+        i += 1 
